@@ -151,10 +151,9 @@ def _answer_yes_no(text, names):
         relation = find_relation(m.group(2))
         y = normalize_atom(m.group(3))
         if relation in RELATION_NAMES:
-            if x not in KNOWN_NAMES or y not in KNOWN_NAMES:
-                missing = [capitalize_name(name) for name in (x, y) if name not in KNOWN_NAMES]
-                if missing:
-                    return f"Sorry, I do not have {', '.join(missing)} in this family KB."
+            missing = [capitalize_name(name) for name in (x, y) if name not in KNOWN_NAMES]
+            if missing:
+                return f"Sorry, I do not have {', '.join(missing)} in this family KB."
             if _valid_person_pair(x, y):
                 return format_yes_no(relation, x, y, query_yes_no(relation, [x, y]))
 
@@ -163,26 +162,31 @@ def _answer_yes_no(text, names):
     if m:
         person = normalize_atom(m.group(1))
         relation = normalize_atom(m.group(2))
-        if person in KNOWN_NAMES:
-            result = bool(query(relation, [person]))
-            if result:
-                return f"Yes, {capitalize_name(person)} is {relation}."
-            return f"No, {capitalize_name(person)} is not {relation}."
+        if person not in KNOWN_NAMES:
+            return f"Sorry, I do not have {capitalize_name(person)} in this family KB."
+        result = bool(query(relation, [person]))
+        if result:
+            return f"Yes, {capitalize_name(person)} is {relation}."
+        return f"No, {capitalize_name(person)} is not {relation}."
 
     # "is ali married"
     m = re.search(r"\bis\s+(\w+)\s+married\b(?!\s+(?:to|with|for))", text)
     if m:
         person = normalize_atom(m.group(1))
-        if person in KNOWN_NAMES:
-            result = bool(query("spouse", [person, "X"])) or bool(query("married", [person, "X"]))
-            if result:
-                return f"Yes, {capitalize_name(person)} is married."
-            return f"No, {capitalize_name(person)} is not married."
+        if person not in KNOWN_NAMES:
+            return f"Sorry, I do not have {capitalize_name(person)} in this family KB."
+        result = bool(query("spouse", [person, "X"])) or bool(query("married", [person, "X"]))
+        if result:
+            return f"Yes, {capitalize_name(person)} is married."
+        return f"No, {capitalize_name(person)} is not married."
 
     # "are ali and alia married"
     m = re.search(r"\bare\s+(\w+)\s+and\s+(\w+)\s+married\b", text)
     if m:
         x, y = normalize_atom(m.group(1)), normalize_atom(m.group(2))
+        missing = [capitalize_name(name) for name in (x, y) if name not in KNOWN_NAMES]
+        if missing:
+            return f"Sorry, I do not have {', '.join(missing)} in this family KB."
         if _valid_person_pair(x, y):
             return format_yes_no("spouse", x, y, query_yes_no("spouse", [x, y]))
 
@@ -190,13 +194,19 @@ def _answer_yes_no(text, names):
     m = re.search(r"\bis\s+(\w+)\s+related\s+to\s+(\w+)\b", text)
     if m:
         x, y = normalize_atom(m.group(1)), normalize_atom(m.group(2))
+        missing = [capitalize_name(name) for name in (x, y) if name not in KNOWN_NAMES]
+        if missing:
+            return f"Sorry, I do not have {', '.join(missing)} in this family KB."
         if _valid_person_pair(x, y):
             return format_yes_no("blood_relative", x, y, query_yes_no("blood_relative", [x, y]))
 
     # "are ali and asad related"
-    m = re.search(r"\bare\s+(\w+)\s+and\s+(\w+)\s+(?:related|blood relatives|relatives)\b", text)
+    m = re.search(r"\b(?:are|re)\s+(\w+)\s+and\s+(\w+)\s+(?:related|blood relatives|relatives)\b", text)
     if m:
         x, y = normalize_atom(m.group(1)), normalize_atom(m.group(2))
+        missing = [capitalize_name(name) for name in (x, y) if name not in KNOWN_NAMES]
+        if missing:
+            return f"Sorry, I do not have {', '.join(missing)} in this family KB."
         if _valid_person_pair(x, y):
             return format_yes_no("blood_relative", x, y, query_yes_no("blood_relative", [x, y]))
 
@@ -204,7 +214,9 @@ def _answer_yes_no(text, names):
     m = re.search(r"\bdoes\s+(\w+)\s+(?:live|lives|reside)\s+(?:in|at)\s+(\w+)\b", text)
     if m:
         person, city = normalize_atom(m.group(1)), normalize_atom(m.group(2))
-        if person in KNOWN_NAMES and city in KNOWN_CITIES:
+        if person not in KNOWN_NAMES:
+            return f"Sorry, I do not have {capitalize_name(person)} in this family KB."
+        if city in KNOWN_CITIES:
             result = query_yes_no("lives_in", [person, city])
             return _property_yes_no("lives in", person, city, result)
 
@@ -212,7 +224,9 @@ def _answer_yes_no(text, names):
     m = re.search(r"\bis\s+(\w+)\s+from\s+(\w+)\b", text)
     if m:
         person, city = normalize_atom(m.group(1)), normalize_atom(m.group(2))
-        if person in KNOWN_NAMES and city in KNOWN_CITIES:
+        if person not in KNOWN_NAMES:
+            return f"Sorry, I do not have {capitalize_name(person)} in this family KB."
+        if city in KNOWN_CITIES:
             result = query_yes_no("lives_in", [person, city])
             return _property_yes_no("from", person, city, result)
 
@@ -220,7 +234,9 @@ def _answer_yes_no(text, names):
     m = re.search(r"\bis\s+(\w+)\s+(?:a|an)\s+(\w+)\b", text)
     if m:
         person, occupation = normalize_atom(m.group(1)), _singular(normalize_atom(m.group(2)))
-        if person in KNOWN_NAMES and occupation in KNOWN_OCCUPATIONS:
+        if person not in KNOWN_NAMES:
+            return f"Sorry, I do not have {capitalize_name(person)} in this family KB."
+        if occupation in KNOWN_OCCUPATIONS:
             result = query_yes_no("occupation", [person, occupation])
             return _property_yes_no("a", person, occupation, result)
 
@@ -229,7 +245,9 @@ def _answer_yes_no(text, names):
     if m:
         person = normalize_atom(m.group(1))
         relation = find_relation(m.group(2))
-        if person in KNOWN_NAMES and relation in RELATION_NAMES:
+        if person not in KNOWN_NAMES:
+            return f"Sorry, I do not have {capitalize_name(person)} in this family KB."
+        if relation in RELATION_NAMES:
             results = _dedupe(query(relation, ["X", person]))
             return f"Yes, {capitalize_name(person)} has {label_for(relation)}." if results else (
                 f"No, I could not find any {label_for(relation)} for {capitalize_name(person)}."

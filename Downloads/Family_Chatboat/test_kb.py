@@ -40,6 +40,8 @@ class FamilyChatbotTests(unittest.TestCase):
         self.assertAnswerContains("who is Ali father in law", "Ali's father-in-law is Tariq")
         self.assertAnswerContains("who is Ali married to?", "Ali's spouse is Alia")
         self.assertAnswerContains("who is Ali's chacha?", "could not find any chacha for Ali")
+        self.assertAnswerContains("re Ali and Asad related?", "Yes, Ali and Asad are blood relatives")
+        self.assertAnswerContains("Who is Ali related to?", "Ali's blood relatives are", "Asad", "Nadia")
 
     def test_unary_and_member_lists(self):
         self.assertAnswerContains("who are the female members?", "Female family members", "Hina", "Shakeela")
