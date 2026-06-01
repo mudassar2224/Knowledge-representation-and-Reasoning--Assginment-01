@@ -35,6 +35,8 @@ KNOWN_OCCUPATIONS = {
     "businessman", "professor", "principal", "pilot", "student",
 }
 
+UNARY_RELATIONS = {"male", "female"}
+
 
 def handle_input(user_input):
     user_input = user_input.strip()
@@ -85,6 +87,18 @@ def _prolog_dispatch(text):
     if yes_no:
         return yes_no
 
+    unary_status = _answer_unary_status(cleaned)
+    if unary_status:
+        return unary_status
+
+    gender_list = _answer_gender_list(cleaned)
+    if gender_list:
+        return gender_list
+
+    family_list = _answer_family_member_list(cleaned)
+    if family_list:
+        return family_list
+
     if _looks_like_profile_request(cleaned) and names:
         return _all_about(names[0])
 
@@ -125,8 +139,41 @@ def _answer_yes_no(text, names):
         x = normalize_atom(m.group(1))
         relation = find_relation(m.group(2))
         y = normalize_atom(m.group(3))
-        if _valid_person_pair(x, y) and relation in RELATION_NAMES:
-            return format_yes_no(relation, x, y, query_yes_no(relation, [x, y]))
+        if relation in RELATION_NAMES:
+            if x not in KNOWN_NAMES or y not in KNOWN_NAMES:
+                missing = [capitalize_name(name) for name in (x, y) if name not in KNOWN_NAMES]
+                if missing:
+                    return f"Sorry, I do not have {', '.join(missing)} in this family KB."
+            if _valid_person_pair(x, y):
+                return format_yes_no(relation, x, y, query_yes_no(relation, [x, y]))
+
+    # "is ali male" / "is ali female"
+    m = re.search(r"\bis\s+(\w+)\s+(?:a|an\s+)?(male|female)\b", text)
+    if m:
+        person = normalize_atom(m.group(1))
+        relation = normalize_atom(m.group(2))
+        if person in KNOWN_NAMES:
+            result = bool(query(relation, [person]))
+            if result:
+                return f"Yes, {capitalize_name(person)} is {relation}."
+            return f"No, {capitalize_name(person)} is not {relation}."
+
+    # "is ali married"
+    m = re.search(r"\bis\s+(\w+)\s+married\b(?!\s+(?:to|with|for))", text)
+    if m:
+        person = normalize_atom(m.group(1))
+        if person in KNOWN_NAMES:
+            result = bool(query("spouse", [person, "X"])) or bool(query("married", [person, "X"]))
+            if result:
+                return f"Yes, {capitalize_name(person)} is married."
+            return f"No, {capitalize_name(person)} is not married."
+
+    # "are ali and alia married"
+    m = re.search(r"\bare\s+(\w+)\s+and\s+(\w+)\s+married\b", text)
+    if m:
+        x, y = normalize_atom(m.group(1)), normalize_atom(m.group(2))
+        if _valid_person_pair(x, y):
+            return format_yes_no("spouse", x, y, query_yes_no("spouse", [x, y]))
 
     # "is ali related to asad"
     m = re.search(r"\bis\s+(\w+)\s+related\s+to\s+(\w+)\b", text)
@@ -180,6 +227,22 @@ def _answer_yes_no(text, names):
     return None
 
 
+def _answer_unary_status(text):
+    m = re.search(r"\bis\s+(\w+)\s+(?:a|an\s+)?(male|female)\b", text)
+    if not m:
+        return None
+
+    person = normalize_atom(m.group(1))
+    relation = normalize_atom(m.group(2))
+    if person not in KNOWN_NAMES or relation not in UNARY_RELATIONS:
+        return None
+
+    result = bool(query(relation, [person]))
+    if result:
+        return f"Yes, {capitalize_name(person)} is {relation}."
+    return f"No, {capitalize_name(person)} is not {relation}."
+
+
 def _valid_person_pair(x, y):
     return x in KNOWN_NAMES and y in KNOWN_NAMES and is_safe_atom(x) and is_safe_atom(y)
 
@@ -212,13 +275,45 @@ def _answer_city_list(text):
     if not city:
         return None
     if city not in KNOWN_CITIES:
-        return f"No family members found in {capitalize_name(city)}."
+        return None
 
     results = _dedupe(query("lives_in", ["X", city]))
     if results:
         joined = ", ".join(format_value(name) for name in results)
         return f"Family members in {capitalize_name(city)}: {joined}."
     return f"No family members found in {capitalize_name(city)}."
+
+
+def _answer_gender_list(text):
+    if not re.search(r"\b(who|which|list|show)\b", text):
+        return None
+
+    for gender in ("male", "female"):
+        if re.search(rf"\b{gender}\b", text):
+            results = _unique_sorted(_dedupe(query(gender, ["X"])))
+            if results:
+                joined = ", ".join(format_value(name) for name in results)
+                return f"{gender.capitalize()} family members: {joined}."
+            return f"No {gender} family members found."
+
+    return None
+
+
+def _answer_family_member_list(text):
+    if not re.search(r"\b(who|which|list|show|all|everyone)\b", text):
+        return None
+
+    if not re.search(r"\b(members?|people|everyone|all members|all people|family kb|family knowledge base|family members?)\b", text):
+        return None
+
+    if re.search(r"\b(male|female)\b", text):
+        return None
+
+    members = _dedupe(query("male", ["X"])) + _dedupe(query("female", ["X"]))
+    members = _unique_sorted(members)
+    if not members:
+        return "I could not find any family members."
+    return "All family members: " + ", ".join(format_value(member) for member in members) + "."
 
 
 def _answer_all_members(text):
@@ -273,8 +368,6 @@ def _answer_property(relation, person):
 
 def _answer_relationship(relation, person):
     results = _dedupe(query(relation, ["X", person]))
-    if not results:
-        results = _dedupe(query(relation, [person, "X"]))
     return format_response(relation, person, results)
 
 

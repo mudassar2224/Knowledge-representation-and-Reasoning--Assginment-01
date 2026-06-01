@@ -37,6 +37,14 @@ class FamilyChatbotTests(unittest.TestCase):
         self.assertAnswerContains("who is Zain dada", "Zain's dada is Shakeel")
         self.assertAnswerContains("who is Laiba maamu", "Laiba's maamu is Usman")
         self.assertAnswerContains("who is Ali father in law", "Ali's father-in-law is Tariq")
+        self.assertAnswerContains("who is Ali married to?", "Ali's spouse is Alia")
+        self.assertAnswerContains("who is Ali's chacha?", "could not find any chacha for Ali")
+
+    def test_unary_and_member_lists(self):
+        self.assertAnswerContains("who are the female members?", "Female family members", "Hina", "Shakeela")
+        self.assertAnswerContains("who are the male members?", "Male family members", "Ali", "Shakeel")
+        self.assertAnswerContains("which members are in the family KB?", "All family members", "Ali", "Hina")
+        self.assertAnswerContains("is Ali male?", "Yes, Ali is male")
 
     def test_group_and_list_queries(self):
         self.assertAnswerContains("who lives in Lahore?", "Family members in Lahore", "Ali", "Nadia")
@@ -49,11 +57,16 @@ class FamilyChatbotTests(unittest.TestCase):
         self.assertAnswerContains("are Ali and Asad related?", "Yes")
         self.assertAnswerContains("does Ali live in Lahore?", "Yes")
         self.assertAnswerContains("is Ali a doctor?", "No")
+        self.assertAnswerContains("is Ali married?", "Yes, Ali is married")
 
     def test_profile_greeting_and_fallback(self):
         self.assertAnswerContains("tell me about Ali", "Here is what I know about Ali", "Date of birth")
         self.assertTrue(handle_input("hi").strip())
         self.assertAnswerContains("what is quantum physics?", "family knowledge-base questions")
+        self.assertAnswerContains(
+            "Tell me about someone who is not in the family",
+            "family knowledge-base questions",
+        )
 
     @unittest.skipIf(importlib.util.find_spec("streamlit") is None, "streamlit is not installed")
     def test_streamlit_module_imports(self):

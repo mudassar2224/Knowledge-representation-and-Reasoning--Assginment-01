@@ -137,6 +137,16 @@ RELATION_MAP = {
     "religion": "religion",
     "faith": "religion",
 
+    # Unary / status relations
+    "male": "male",
+    "males": "male",
+    "female": "female",
+    "females": "female",
+    "married": "spouse",
+    "married to": "spouse",
+    "family member": "family_member",
+    "family members": "family_member",
+
     # Logical relations
     "ancestor": "ancestor",
     "ancestors": "ancestor",
