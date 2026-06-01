@@ -130,16 +130,17 @@ def apply_styles():
         <style>
         .stApp {
             background:
-                radial-gradient(circle at 12% 8%, rgba(255, 150, 110, 0.32), transparent 24%),
-                radial-gradient(circle at 88% 10%, rgba(99, 102, 241, 0.22), transparent 24%),
-                radial-gradient(circle at 18% 82%, rgba(34, 197, 94, 0.18), transparent 25%),
-                radial-gradient(circle at 84% 78%, rgba(236, 72, 153, 0.18), transparent 22%),
-                linear-gradient(135deg, #fff7ef 0%, #f3fff8 34%, #f1f5ff 67%, #fff1fa 100%);
+                radial-gradient(circle at 12% 8%, rgba(255, 155, 112, 0.30), transparent 22%),
+                radial-gradient(circle at 88% 10%, rgba(124, 139, 255, 0.22), transparent 24%),
+                radial-gradient(circle at 18% 82%, rgba(85, 212, 182, 0.18), transparent 24%),
+                radial-gradient(circle at 84% 78%, rgba(255, 117, 165, 0.18), transparent 22%),
+                linear-gradient(135deg, #fff7ef 0%, #f6fff8 33%, #f3f6ff 66%, #fff2fa 100%);
+            background-attachment: fixed;
         }
 
         section[data-testid="stSidebar"] {
-            background: linear-gradient(180deg, rgba(255, 248, 242, 0.94) 0%, rgba(240, 250, 255, 0.92) 48%, rgba(250, 243, 255, 0.90) 100%);
-            border-right: 1px solid rgba(255, 157, 115, 0.28);
+            background: linear-gradient(180deg, rgba(255, 250, 245, 0.92) 0%, rgba(242, 251, 255, 0.90) 48%, rgba(251, 244, 255, 0.90) 100%);
+            border-right: 1px solid rgba(255, 157, 115, 0.22);
             backdrop-filter: blur(18px);
         }
 
@@ -153,7 +154,7 @@ def apply_styles():
             padding: 1.25rem 1.45rem;
             border-radius: 24px;
             border: 1px solid rgba(255, 255, 255, 0.88);
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.76), rgba(255, 255, 255, 0.48));
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.80), rgba(255, 246, 236, 0.58), rgba(243, 248, 255, 0.78));
             box-shadow:
                 0 18px 45px rgba(51, 65, 85, 0.10),
                 inset 0 1px 0 rgba(255, 255, 255, 0.78);
@@ -206,7 +207,7 @@ def apply_styles():
         }
 
         .stButton > button {
-            background: linear-gradient(135deg, #ff8a5b 0%, #ff6aa2 55%, #7c8bff 100%);
+            background: linear-gradient(135deg, #ff8a5b 0%, #ff72a0 55%, #7c8bff 100%);
             color: white !important;
             border: none !important;
             border-radius: 999px !important;
@@ -222,20 +223,39 @@ def apply_styles():
         }
 
         div[data-testid="stChatInput"] {
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.85), rgba(245, 249, 255, 0.90));
-            border: 1px solid rgba(126, 151, 255, 0.22);
-            border-radius: 24px;
-            box-shadow: 0 16px 40px rgba(15, 23, 42, 0.08);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.88), rgba(247, 250, 255, 0.95));
+            border: 1px solid rgba(126, 151, 255, 0.30);
+            border-radius: 20px;
+            box-shadow: 0 14px 32px rgba(15, 23, 42, 0.08);
+            padding: 0.12rem 0.18rem;
+            backdrop-filter: blur(18px);
         }
 
         div[data-testid="stChatInput"] textarea {
             color: #1f2937;
+            min-height: 46px !important;
+            max-height: 70px !important;
+            padding: 0.5rem 0.85rem !important;
+            background: transparent !important;
+            border: none !important;
         }
 
         div[data-testid="stChatInput"] button {
             background: linear-gradient(135deg, #ff8a5b 0%, #ff6aa2 100%) !important;
             border: none !important;
-            border-radius: 16px !important;
+            border-radius: 999px !important;
+            width: 2.65rem !important;
+            height: 2.65rem !important;
+            box-shadow: 0 10px 18px rgba(255, 122, 98, 0.20);
+        }
+
+        div[data-testid="stChatInput"] textarea::placeholder {
+            color: #8a96ab;
+            opacity: 1;
+        }
+
+        div[data-testid="stChatInput"] button:hover {
+            filter: brightness(1.04);
         }
 
         div[data-testid="stMetric"] {
