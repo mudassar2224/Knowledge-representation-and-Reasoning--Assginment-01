@@ -6,6 +6,8 @@ import re
 KNOWN_NAMES = {
     "ali", "asad", "shakeel", "zain", "hamza", "usman", "bilal", "tariq",
     "alia", "shakeela", "zaini", "laiba", "sana", "nadia", "rukhsana", "hina",
+    "hamid", "salma", "asghar", "farah", "yousuf", "rabia", "amir", "samina",
+    "faisal", "hiba",
 }
 
 
