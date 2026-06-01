@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<aiml version="1.0.1" encoding="UTF-8">
+
+<category>
+  <pattern>HELLO</pattern>
+  <template>
+    <random>
+      <li>Hello! Nice to meet you. Ask me anything about the family knowledge base.</li>
+      <li>Hi there! I am ready for family questions about relations, dates, jobs, cities, and more.</li>
+      <li>Hey! Good to see you. Try a question like "who is Ali's father?"</li>
+      <li>Hello, nice to meet you. What would you like to know about the family?</li>
+    </random>
+  </template>
+</category>
+
+<category>
+  <pattern>HI</pattern>
+  <template><srai>HELLO</srai></template>
+</category>
+
+<category>
+  <pattern>HEY</pattern>
+  <template><srai>HELLO</srai></template>
+</category>
+
+<category>
+  <pattern>GREETINGS</pattern>
+  <template><srai>HELLO</srai></template>
+</category>
+
+<category>
+  <pattern>HI THERE</pattern>
+  <template><srai>HELLO</srai></template>
+</category>
+
+<category>
+  <pattern>HELLO THERE</pattern>
+  <template><srai>HELLO</srai></template>
+</category>
+
+<category>
+  <pattern>SALAM</pattern>
+  <template>Wa alaikum salam! Ask me a family relationship or profile question.</template>
+</category>
+
+<category>
+  <pattern>ASSALAM O ALAIKUM</pattern>
+  <template><srai>SALAM</srai></template>
+</category>
+
+<category>
+  <pattern>GOOD MORNING</pattern>
+  <template>Good morning! How can I help with the family knowledge base today?</template>
+</category>
+
+<category>
+  <pattern>GOOD AFTERNOON</pattern>
+  <template>Good afternoon! Send me a family query whenever you are ready.</template>
+</category>
+
+<category>
+  <pattern>GOOD EVENING</pattern>
+  <template>Good evening! I can answer family facts, relationships, and full profiles.</template>
+</category>
+
+<category>
+  <pattern>HELP</pattern>
+  <template>Here are some things you can ask me:
+
+RELATIONSHIPS:
+who is Ali's father?
+father of Ali
+show siblings of Zain
+list children of Ali
+who is Zain's dada?
+who is Laiba's maamu?
+
+PROPERTIES:
+what is Ali's dob?
+what is Ali's occupation?
+where does Ali live?
+what is Ali's religion?
+
+YES / NO:
+is Shakeel an ancestor of Zain?
+are Ali and Asad related?
+does Ali live in Lahore?
+
+LISTS:
+who lives in Lahore?
+list all members
+who is a doctor?
+
+PROFILE:
+tell me about Ali</template>
+</category>
+
+<category>
+  <pattern>WHAT CAN YOU DO</pattern>
+  <template><srai>HELP</srai></template>
+</category>
+
+<category>
+  <pattern>HOW DO I USE THIS</pattern>
+  <template><srai>HELP</srai></template>
+</category>
+
+<category>
+  <pattern>HOW DO I USE</pattern>
+  <template><srai>HELP</srai></template>
+</category>
+
+<category>
+  <pattern>BYE</pattern>
+  <template>
+    <random>
+      <li>Goodbye! It was great helping you explore the family tree.</li>
+      <li>Bye! Come back when you want to ask more family questions.</li>
+      <li>Goodbye. Have a nice day!</li>
+    </random>
+  </template>
+</category>
+
+<category>
+  <pattern>GOODBYE</pattern>
+  <template><srai>BYE</srai></template>
+</category>
+
+<category>
+  <pattern>SEE YOU</pattern>
+  <template><srai>BYE</srai></template>
+</category>
+
+<category>
+  <pattern>TAKE CARE</pattern>
+  <template><srai>BYE</srai></template>
+</category>
+
+<category>
+  <pattern>ALLAH HAFIZ</pattern>
+  <template><srai>BYE</srai></template>
+</category>
+
+</aiml>
