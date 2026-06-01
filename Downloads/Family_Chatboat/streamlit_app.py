@@ -130,23 +130,43 @@ def apply_styles():
         <style>
         .stApp {
             background:
-                radial-gradient(circle at top left, rgba(255, 162, 125, 0.20), transparent 30%),
-                radial-gradient(circle at top right, rgba(145, 197, 255, 0.18), transparent 30%),
-                linear-gradient(180deg, #fffdf9 0%, #fff8f4 50%, #f7fbff 100%);
+                radial-gradient(circle at 12% 8%, rgba(255, 150, 110, 0.32), transparent 24%),
+                radial-gradient(circle at 88% 10%, rgba(99, 102, 241, 0.22), transparent 24%),
+                radial-gradient(circle at 18% 82%, rgba(34, 197, 94, 0.18), transparent 25%),
+                radial-gradient(circle at 84% 78%, rgba(236, 72, 153, 0.18), transparent 22%),
+                linear-gradient(135deg, #fff7ef 0%, #f3fff8 34%, #f1f5ff 67%, #fff1fa 100%);
         }
 
         section[data-testid="stSidebar"] {
-            background: rgba(255, 255, 255, 0.78);
+            background: linear-gradient(180deg, rgba(255, 248, 242, 0.94) 0%, rgba(240, 250, 255, 0.92) 48%, rgba(250, 243, 255, 0.90) 100%);
+            border-right: 1px solid rgba(255, 157, 115, 0.28);
             backdrop-filter: blur(18px);
         }
 
+        section[data-testid="stSidebar"] > div {
+            background: transparent;
+        }
+
         .hero-card {
+            position: relative;
+            overflow: hidden;
             padding: 1.25rem 1.45rem;
             border-radius: 24px;
-            border: 1px solid rgba(255, 255, 255, 0.85);
-            background: rgba(255, 255, 255, 0.62);
-            box-shadow: 0 14px 40px rgba(31, 41, 55, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.88);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.76), rgba(255, 255, 255, 0.48));
+            box-shadow:
+                0 18px 45px rgba(51, 65, 85, 0.10),
+                inset 0 1px 0 rgba(255, 255, 255, 0.78);
             margin-bottom: 1rem;
+        }
+
+        .hero-card::before {
+            content: "";
+            position: absolute;
+            inset: 0 auto auto 0;
+            width: 100%;
+            height: 6px;
+            background: linear-gradient(90deg, #ff8a5b 0%, #ffd166 28%, #59c3c3 58%, #7c8bff 80%, #ff6aa2 100%);
         }
 
         .hero-title {
@@ -159,7 +179,7 @@ def apply_styles():
 
         .hero-subtitle {
             font-size: 1rem;
-            color: #586477;
+            color: #52606d;
             margin-bottom: 0.85rem;
         }
 
@@ -168,20 +188,74 @@ def apply_styles():
             padding: 0.38rem 0.78rem;
             margin: 0.15rem 0.28rem 0 0;
             border-radius: 999px;
-            background: rgba(255, 255, 255, 0.78);
-            border: 1px solid rgba(255, 255, 255, 0.92);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.92), rgba(245, 249, 255, 0.80));
+            border: 1px solid rgba(255, 255, 255, 0.96);
             color: #405066;
             font-size: 0.82rem;
             font-weight: 600;
+            box-shadow: 0 8px 20px rgba(15, 23, 42, 0.06);
         }
 
         .section-label {
             font-size: 0.82rem;
             text-transform: uppercase;
             letter-spacing: 0.12em;
-            color: #6b7280;
+            color: #64748b;
             margin-bottom: 0.5rem;
             font-weight: 700;
+        }
+
+        .stButton > button {
+            background: linear-gradient(135deg, #ff8a5b 0%, #ff6aa2 55%, #7c8bff 100%);
+            color: white !important;
+            border: none !important;
+            border-radius: 999px !important;
+            padding: 0.7rem 1rem !important;
+            box-shadow: 0 12px 28px rgba(255, 122, 98, 0.22);
+            transition: transform 0.18s ease, box-shadow 0.18s ease, filter 0.18s ease;
+        }
+
+        .stButton > button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 16px 34px rgba(99, 102, 241, 0.22);
+            filter: saturate(1.05);
+        }
+
+        div[data-testid="stChatInput"] {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.85), rgba(245, 249, 255, 0.90));
+            border: 1px solid rgba(126, 151, 255, 0.22);
+            border-radius: 24px;
+            box-shadow: 0 16px 40px rgba(15, 23, 42, 0.08);
+        }
+
+        div[data-testid="stChatInput"] textarea {
+            color: #1f2937;
+        }
+
+        div[data-testid="stChatInput"] button {
+            background: linear-gradient(135deg, #ff8a5b 0%, #ff6aa2 100%) !important;
+            border: none !important;
+            border-radius: 16px !important;
+        }
+
+        div[data-testid="stMetric"] {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.82), rgba(245, 250, 255, 0.72));
+            border: 1px solid rgba(255, 255, 255, 0.9);
+            border-radius: 18px;
+            padding: 0.25rem 0.65rem;
+            box-shadow: 0 10px 24px rgba(15, 23, 42, 0.05);
+        }
+
+        div[data-testid="stChatMessage"] {
+            border-radius: 22px;
+        }
+
+        div[data-testid="stChatMessage"] [data-testid="stMarkdownContainer"] {
+            background: rgba(255, 255, 255, 0.72);
+            border: 1px solid rgba(255, 255, 255, 0.9);
+            border-radius: 18px;
+            padding: 0.7rem 0.9rem;
+            box-shadow: 0 12px 24px rgba(15, 23, 42, 0.05);
         }
         </style>
         """,
