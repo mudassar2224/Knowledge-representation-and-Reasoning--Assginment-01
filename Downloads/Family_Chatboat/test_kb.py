@@ -33,6 +33,7 @@ class FamilyChatbotTests(unittest.TestCase):
         self.assertAnswerContains("who is Ali's father?", "Ali's father is Shakeel")
         self.assertAnswerContains("father of Ali", "Ali's father is Shakeel")
         self.assertAnswerContains("list children of Ali", "Zain", "Zaini")
+        self.assertAnswerContains("who are Ali's children?", "Ali's children are", "Zain", "Zaini")
         self.assertAnswerContains("show siblings of Zain", "Zaini")
         self.assertAnswerContains("who is Zain dada", "Zain's dada is Shakeel")
         self.assertAnswerContains("who is Laiba maamu", "Laiba's maamu is Usman")
@@ -49,14 +50,15 @@ class FamilyChatbotTests(unittest.TestCase):
     def test_group_and_list_queries(self):
         self.assertAnswerContains("who lives in Lahore?", "Family members in Lahore", "Ali", "Nadia")
         self.assertAnswerContains("who is a doctor?", "Shakeel")
+        self.assertAnswerContains("which family members are doctors?", "Family members who are doctors", "Shakeel")
         self.assertAnswerContains("same city as Ali", "Alia", "Zain")
         self.assertAnswerContains("list all members", "All family members", "Ali", "Hina")
 
     def test_yes_no_queries(self):
         self.assertAnswerContains("is Shakeel an ancestor of Zain?", "Yes")
         self.assertAnswerContains("are Ali and Asad related?", "Yes")
-        self.assertAnswerContains("does Ali live in Lahore?", "Yes")
-        self.assertAnswerContains("is Ali a doctor?", "No")
+        self.assertAnswerContains("does Ali live in Lahore?", "Yes, Ali lives in Lahore")
+        self.assertAnswerContains("is Ali a doctor?", "No, Ali is not a doctor")
         self.assertAnswerContains("is Ali married?", "Yes, Ali is married")
 
     def test_profile_greeting_and_fallback(self):
@@ -65,8 +67,9 @@ class FamilyChatbotTests(unittest.TestCase):
         self.assertAnswerContains("what is quantum physics?", "family knowledge-base questions")
         self.assertAnswerContains(
             "Tell me about someone who is not in the family",
-            "family knowledge-base questions",
+            "only describe family members that exist in the knowledge base",
         )
+        self.assertAnswerContains("Who is John's father?", "Sorry, I do not have John in this family KB")
 
     @unittest.skipIf(importlib.util.find_spec("streamlit") is None, "streamlit is not installed")
     def test_streamlit_module_imports(self):

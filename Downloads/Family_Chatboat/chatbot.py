@@ -95,6 +95,10 @@ def _prolog_dispatch(text):
     if gender_list:
         return gender_list
 
+    occupation_answer = _answer_occupation_list(cleaned)
+    if occupation_answer:
+        return occupation_answer
+
     family_list = _answer_family_member_list(cleaned)
     if family_list:
         return family_list
@@ -122,9 +126,16 @@ def _prolog_dispatch(text):
     if all_members:
         return all_members
 
-    occupation_answer = _answer_occupation_list(cleaned)
-    if occupation_answer:
-        return occupation_answer
+    unknown_name_answer = _answer_unknown_name_question(cleaned)
+    if unknown_name_answer:
+        return unknown_name_answer
+
+    if _looks_like_profile_request(cleaned) and not names:
+        if re.search(r"\b(someone|someone else|person|member|not in the family|not in this family)\b", cleaned):
+            return (
+                "I can only describe family members that exist in the knowledge base. "
+                "Try asking about a known member like Ali, Asad, Shakeel, or Zain."
+            )
 
     if len(names) == 1:
         return _all_about(names[0])
@@ -248,6 +259,22 @@ def _valid_person_pair(x, y):
 
 
 def _property_yes_no(label, person, value, result):
+    if label == "lives in":
+        if result:
+            return f"Yes, {capitalize_name(person)} lives in {format_value(value)}."
+        return f"No, {capitalize_name(person)} does not live in {format_value(value)}."
+
+    if label == "from":
+        if result:
+            return f"Yes, {capitalize_name(person)} is from {format_value(value)}."
+        return f"No, {capitalize_name(person)} is not from {format_value(value)}."
+
+    if label == "a":
+        article_value = format_value(value).lower()
+        if result:
+            return f"Yes, {capitalize_name(person)} is a {article_value}."
+        return f"No, {capitalize_name(person)} is not a {article_value}."
+
     if result:
         return f"Yes, {capitalize_name(person)} is {label} {format_value(value)}."
     return f"No, {capitalize_name(person)} is not {label} {format_value(value)}."
@@ -358,6 +385,30 @@ def _answer_occupation_list(text):
                 joined = ", ".join(format_value(name) for name in results)
                 return f"Family members who are {occupation}s: {joined}."
             return f"No family members found with occupation {format_value(occupation)}."
+    return None
+
+
+def _answer_unknown_name_question(text):
+    if re.search(r"\bnot in (?:the|this) family\b", text):
+        return "I can only describe family members that exist in the knowledge base."
+
+    patterns = (
+        r"\b(?:who|what)\s+is\s+(\w+)\s+s\s+(.+)$",
+        r"\b(?:who|what)\s+is\s+(\w+)\s+(?:a|an|the)?\s+(.+)$",
+        r"\b(?:who|what)\s+are\s+(\w+)\s+s\s+(.+)$",
+        r"\b(?:who|what)\s+are\s+(\w+)\s+(?:a|an|the)?\s+(.+)$",
+    )
+
+    for pattern in patterns:
+        m = re.search(pattern, text)
+        if not m:
+            continue
+
+        person = normalize_atom(m.group(1))
+        relation = find_relation(m.group(2))
+        if relation and person not in KNOWN_NAMES:
+            return f"Sorry, I do not have {capitalize_name(person)} in this family KB."
+
     return None
 
 

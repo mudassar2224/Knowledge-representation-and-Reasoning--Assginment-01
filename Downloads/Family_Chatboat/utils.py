@@ -27,6 +27,55 @@ RELATION_LABELS = {
 }
 
 
+def _pluralize_label(label: str) -> str:
+    label = str(label).strip()
+    if not label:
+        return label
+
+    irregular = {
+        "child": "children",
+        "grandchild": "grandchildren",
+        "person": "people",
+        "man": "men",
+        "woman": "women",
+        "wife": "wives",
+        "husband": "husbands",
+        "father": "fathers",
+        "mother": "mothers",
+        "son": "sons",
+        "daughter": "daughters",
+        "brother": "brothers",
+        "sister": "sisters",
+        "grandfather": "grandfathers",
+        "grandmother": "grandmothers",
+        "grandson": "grandsons",
+        "granddaughter": "granddaughters",
+        "nephew": "nephews",
+        "niece": "nieces",
+        "cousin": "cousins",
+        "spouse": "spouses",
+    }
+    if label in irregular:
+        return irregular[label]
+
+    if label.endswith("-in-law"):
+        base = label[:-7]
+        return f"{_pluralize_label(base)}-in-law"
+
+    if " " in label:
+        parts = label.split()
+        parts[-1] = _pluralize_label(parts[-1])
+        return " ".join(parts)
+
+    if label.endswith("y") and len(label) > 1 and label[-2] not in "aeiou":
+        return label[:-1] + "ies"
+
+    if label.endswith("s"):
+        return label
+
+    return label + "s"
+
+
 # Maps user-typed words or phrases to canonical Prolog relation names.
 RELATION_MAP = {
     # Basic family
@@ -221,12 +270,13 @@ def format_response(relation, subject, results):
         return f"Sorry, I could not find any {label_for(relation)} for {capitalize_name(subject)}."
 
     label = label_for(relation)
+    plural_label = _pluralize_label(label)
     subject_cap = capitalize_name(subject)
     results_cap = [format_value(r) for r in results]
 
     if len(results_cap) == 1:
         return f"{subject_cap}'s {label} is {results_cap[0]}."
-    return f"{subject_cap}'s {label}s are: {', '.join(results_cap)}."
+    return f"{subject_cap}'s {plural_label} are: {', '.join(results_cap)}."
 
 
 def format_yes_no(relation: str, x: str, y: str, result: bool) -> str:
